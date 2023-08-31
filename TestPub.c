@@ -5,7 +5,12 @@
 int main(int argc, char **argv)
 {
     natsConnection *conn = NULL;
+    natsOptions *opts = NULL;
     natsStatus s = NATS_OK;
+
+    s = natsOptions_Create(&opts);
+    if (s == NATS_OK)
+    s = natsOptions_SetNoEcho(opts, true);
 
     // Connecting to NATS Server
     s = natsConnection_ConnectTo(&conn, "localhost:4222");
@@ -42,6 +47,7 @@ int main(int argc, char **argv)
 
     // Everything created must be destroyed
     natsConnection_Destroy(conn);
+    natsOptions_Destroy(opts);
 
     return 0;
 }
