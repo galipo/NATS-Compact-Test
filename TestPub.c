@@ -15,7 +15,12 @@ int main(int argc, char **argv)
     // Connecting to NATS Server
     s = natsConnection_ConnectTo(&conn, "localhost:4222");
 
-    
+    if (s == NATS_OK)
+    {
+    int64_t mp = natsConnection_GetMaxPayload(conn);
+    printf("Max payload: %d\n", (int) mp);
+    }
+   
     if (s == NATS_OK)
     {   
     	// Start time
