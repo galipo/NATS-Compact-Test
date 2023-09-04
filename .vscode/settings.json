@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "nats.h": "c"
+        "nats.h": "c",
+        "stdio.h": "c"
     }
 }
