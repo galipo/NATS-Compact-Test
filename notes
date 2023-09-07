@@ -1,0 +1,48 @@
+
+
+
+
+- cmake projesine ekleyip, build yapılacak
+- gtest yapılacak
+- Test case 1 Publisher saniyede 1000 msg  Multi Subscriber  test 1 daika sürsün
+- NATS Use Case önerisi düşünülecek (Galip)
+
+
+#include "gtest/gtest.h"
+#include <boost/thread.hpp>
+
+class TimerScannerTest : public testing::TestWithParam<uint32_t>  {
+    public:
+      static constexpr uint64_t MaxTimestampRecord = 2;
+      static constexpr bool isDebugActive = false;
+      TimerScannerTest() {} : gerekli init işlemleri
+      ~TimerScannerTest() override {} test sonalanınca destroy işleri
+
+      void send_component_event_poll() {
+        while(isRunning){
+          if (componentInterface != nullptr) {
+
+              componentInterface->operator()();
+            
+            pollEventCnt++;
+          }
+        }
+      }
+
+
+
+
+workers.create_thread(boost::bind(&boost::asio::io_service::run, &timerExecIoService));
+workers.create_thread(boost::bind(&TimerScannerTest::send_component_event_poll, this));
+workers.join_all(); // wait for all worker threads to finish
+
+TEST_P(TimerScannerTest, ScannerTestSingle)
+{
+  std::string timeoutEventId{"timeout-event-Id-1"};
+  timerScanner->add_task(std::bind(&TimerScannerTest::cbMethod, this, timeoutEventId), timeToCall, TimerScanner::TaskType::Single);
+  int64_t timestamp = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+  std::this_thread::sleep_for(std::chrono::milliseconds(timeToCall*millisecondConvertFactor*2));
+
+  EXPECT_EQ(msg count, 1);
+}
