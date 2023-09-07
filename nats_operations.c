@@ -11,7 +11,7 @@ char* publishMsg(char* message)
     
 };
 
-static void onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure)
+void onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure)
 {
     printf("Received msg: %s - %.*s\n",
            natsMsg_GetSubject(msg),
