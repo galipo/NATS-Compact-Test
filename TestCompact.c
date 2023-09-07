@@ -41,9 +41,12 @@ int main(int argc, char **argv)
 
          switch (op)
         {
-        case Publish:   s = natsConnection_PublishString(conn, changeSubject(subject), publishMsg(message)); break;
-        case Subscribe:  s = natsConnection_SubscribeTimeout(&sub, conn, changeSubject(subject), 10000, onMsg, NULL); break;
-        case Unsubscribe:  s = natsSubscription_Unsubscribe(sub); natsSubscription_Destroy(sub); break;
+        case Publish:  if(s == NATS_OK) {s = natsConnection_PublishString(conn, changeSubject(subject), publishMsg(message));}; break;
+        case Subscribe:
+         if (s == NATS_OK)
+          {s = natsConnection_SubscribeTimeout(&sub, conn, changeSubject(subject), 10000, onMsg, NULL);}; 
+          break;
+        case Unsubscribe: if(s == NATS_OK) {s = natsSubscription_Unsubscribe(sub); natsSubscription_Destroy(sub);}; break;
         case ExitProgram: exit = 0; break;
     
         default:
