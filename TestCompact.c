@@ -9,6 +9,7 @@ enum Operation
 {
     Publish,
     Subscribe,
+    Unsubscribe,
     ChangeServer,
     ChangeSubject,
     ExitProgram
@@ -35,31 +36,17 @@ int main(int argc, char **argv)
     
     while (exit)    
     {
-        printf("Select operation number: \n 0.Publish \n 1.Subscribe \n 4.Exit \n");
+        printf("Select operation number: \n 0.Publish \n 1.Subscribe \n 2.Unsubscribe \n 5.Exit \n");
         scanf("%u", &op);
 
          switch (op)
         {
-        case Publish:   s = natsConnection_PublishString(conn, changeSubject(subject), publishMsg(message)); break;
-        case Subscribe: s = natsConnection_SubscribeSync(&sub, conn, changeSubject(subject));
-                        s = natsSubscription_NextMsg(&msg, sub, 10000);
-                         if (s == NATS_OK)   
-                            {   
-                                printf("Received msg: %s - %.*s\n",
-                                    natsMsg_GetSubject(msg),
-                                    natsMsg_GetDataLength(msg),
-                                    natsMsg_GetData(msg));
-
-                            //Created things must be destroyed
-                                natsMsg_Destroy(msg);
-                            }
-                            //Message receiving time interval
-                            else if (s == NATS_TIMEOUT)
-                            {
-                                printf("No message received within the timeout.\n");
-                            }
-                        natsSubscription_Destroy(sub); 
-        break;
+        case Publish:  if(s == NATS_OK) {s = natsConnection_PublishString(conn, changeSubject(subject), publishMsg(message));}; break;
+        case Subscribe:
+         if (s == NATS_OK)
+          {s = natsConnection_SubscribeTimeout(&sub, conn, changeSubject(subject), 10000, onMsg, NULL);}; 
+          break;
+        case Unsubscribe: if(s == NATS_OK) {s = natsSubscription_Unsubscribe(sub); natsSubscription_Destroy(sub);}; break;
         case ExitProgram: exit = 0; break;
     
         default:

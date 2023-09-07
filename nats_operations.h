@@ -4,7 +4,7 @@
 #include <nats/nats.h>
 
 char* publishMsg(char* message);
-void subscribeToSubj();
+void onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure);
 char* changeServer(char* serverAddress);
 char* changeSubject(char* subject);
 
