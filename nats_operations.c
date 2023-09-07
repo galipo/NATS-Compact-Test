@@ -11,8 +11,7 @@ char* publishMsg(char* message)
     
 };
 
-static void
-onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure)
+static void onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure)
 {
     printf("Received msg: %s - %.*s\n",
            natsMsg_GetSubject(msg),
@@ -21,7 +20,7 @@ onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure)
 
     // Need to destroy the message!
     natsMsg_Destroy(msg);
-}
+};
 
 char* changeServer(char* serverAdress)
 {
