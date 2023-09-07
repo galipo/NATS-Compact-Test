@@ -9,6 +9,7 @@ enum Operation
 {
     Publish,
     Subscribe,
+    Unsubscribe,
     ChangeServer,
     ChangeSubject,
     ExitProgram
@@ -35,14 +36,14 @@ int main(int argc, char **argv)
     
     while (exit)    
     {
-        printf("Select operation number: \n 0.Publish \n 1.Subscribe \n 4.Exit \n");
+        printf("Select operation number: \n 0.Publish \n 1.Subscribe \n 2.Unsubscribe \n 5.Exit \n");
         scanf("%u", &op);
 
          switch (op)
         {
         case Publish:   s = natsConnection_PublishString(conn, changeSubject(subject), publishMsg(message)); break;
-        case Subscribe:  s = natsConnection_SubscribeTimeout(&sub, conn, changeSubject(subject), 10000, onMsg, NULL);
-        break;
+        case Subscribe:  s = natsConnection_SubscribeTimeout(&sub, conn, changeSubject(subject), 10000, onMsg, NULL); break;
+        case Unsubscribe:  s = natsSubscription_Unsubscribe(sub); natsSubscription_Destroy(sub); break;
         case ExitProgram: exit = 0; break;
     
         default:
