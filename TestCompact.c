@@ -41,24 +41,7 @@ int main(int argc, char **argv)
          switch (op)
         {
         case Publish:   s = natsConnection_PublishString(conn, changeSubject(subject), publishMsg(message)); break;
-        case Subscribe: s = natsConnection_SubscribeSync(&sub, conn, changeSubject(subject));
-                        s = natsSubscription_NextMsg(&msg, sub, 10000);
-                         if (s == NATS_OK)   
-                            {   
-                                printf("Received msg: %s - %.*s\n",
-                                    natsMsg_GetSubject(msg),
-                                    natsMsg_GetDataLength(msg),
-                                    natsMsg_GetData(msg));
-
-                            //Created things must be destroyed
-                                natsMsg_Destroy(msg);
-                            }
-                            //Message receiving time interval
-                            else if (s == NATS_TIMEOUT)
-                            {
-                                printf("No message received within the timeout.\n");
-                            }
-                        natsSubscription_Destroy(sub); 
+        case Subscribe:  s = natsConnection_SubscribeTimeout(&sub, conn, changeSubject(subject), 10000, onMsg, NULL);
         break;
         case ExitProgram: exit = 0; break;
     

@@ -4,16 +4,24 @@
 
 char* publishMsg(char* message)
 {
+    
     printf("Enter message you want to publish: \n");
     scanf("%s", message);
     return message;
     
 };
 
-void subscribeToSubj()
+static void
+onMsg(natsConnection *conn, natsSubscription *sub, natsMsg *msg, void *closure)
 {
+    printf("Received msg: %s - %.*s\n",
+           natsMsg_GetSubject(msg),
+           natsMsg_GetDataLength(msg),
+           natsMsg_GetData(msg));
 
-};
+    // Need to destroy the message!
+    natsMsg_Destroy(msg);
+}
 
 char* changeServer(char* serverAdress)
 {
