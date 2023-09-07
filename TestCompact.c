@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <nats/nats.h>
-#include <nats_operations.h>
+#include "nats_operations.h"
 
 
 
@@ -23,9 +23,9 @@ int main(int argc, char **argv)
     natsMsg             *msg       = NULL;
     natsStatus          s          = NATS_OK;
 
-    char subject[255];
-    char serverAdress[255];
-    char message[255];
+    char subject[256];
+    char serverAdress[256];
+    char message[256];
     enum Operation op;
     int exit = 1;
 
